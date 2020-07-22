@@ -6,10 +6,7 @@ let id = 0;
 
 //state
 const initialState = {
-  allTodos: [
-    { text: "Learn redux", isDone: false, id: id++ },
-    { text: "Learn react", isDone: false, id: id++ },
-  ],
+  allTodos: [],
   activeTab: "All",
 };
 
@@ -33,6 +30,9 @@ function allTodosReducer(state = initialState.allTodos, action) {
     case "REMOVE_TODO":
       console.log(action);
       return state.filter((todo) => todo.id !== action.payload);
+    case "CLEAR_COMPLETED":
+      console.log(action);
+      return state.filter((todo) => !todo.isDone);
     default:
       return state;
   }
@@ -66,6 +66,9 @@ let changeTabAction = (payload) => ({
   type: "CHANGE_TAB",
   payload,
 });
+let clearCompleted = () => ({
+  type: "CLEAR_COMPLETED",
+});
 
 let rootReducer = Redux.combineReducers({
   allTodos: allTodosReducer,
@@ -92,6 +95,13 @@ function handleToggle(id) {
 function handleRemove(id) {
   dispatch(removeTodoAction(id));
 }
+//  function handleEdit(id){
+//      dispatch()
+//  }
+
+
+
+
 
 function createUI(root, data) {
   root.innerHTML = "";
@@ -108,6 +118,10 @@ function createUI(root, data) {
     input.addEventListener("click", () => handleToggle(todo.id));
     span.append(input, label);
     let p = document.createElement("p");
+    
+    p.addEventListener('dblclick',handleEdit);
+
+
     p.innerText = todo.text;
     let spanDel = document.createElement("span");
     spanDel.innerText = "X";
@@ -126,12 +140,6 @@ function filterTodo(active, all) {
       return all.filter((todo) => todo.isDone);
     case "Active":
       return all.filter((todo) => !todo.isDone);
-      case "Clear complete":
-          return all.filter((todo) => {
-            if(todo.isDone===true){
-            
-            }
-          })
     default:
       return all;
   }
@@ -139,7 +147,11 @@ function filterTodo(active, all) {
 inputText.addEventListener("keyup", handleAddTodo);
 
 function handleChange(newTab) {
-  dispatch(changeTabAction(newTab));
+  if (newTab == "Clear complete") {
+    dispatch(clearCompleted());
+  } else {
+    dispatch(changeTabAction(newTab));
+  }
 }
 
 [...footer.children].forEach((ele) => {
