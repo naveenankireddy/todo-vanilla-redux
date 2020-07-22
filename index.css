@@ -1,0 +1,40 @@
+footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-right: 30px; */
+}
+ul.list {
+    list-style: none; 
+    max-width: 400px;
+    /* margin: 0 auto; */
+    
+}
+body{
+    max-width: 400px;
+    margin: 0 auto;
+}
+li{
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-right: 1rem;
+}
+.main-input{
+    padding: 1rem;
+    font-size: 24px;
+    border : 1px solid cyan;
+    /* margin-top: 200px; */
+}
+main{
+    display: flex;
+    flex-direction: column;
+}
+footer button{
+    border: 1px solid green ;
+    margin-right: 0.5rem;
+}
+.heading{
+    text-align: center;
+    margin-top: 200px;font-style: italic;
+}
