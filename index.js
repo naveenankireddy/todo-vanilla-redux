@@ -33,6 +33,14 @@ function allTodosReducer(state = initialState.allTodos, action) {
     case "CLEAR_COMPLETED":
       console.log(action);
       return state.filter((todo) => !todo.isDone);
+    case "EDIT_TODO":
+      return state.map((todo) => {
+        if (todo.id == action.payload.id) {
+          todo.text = action.payload.text;
+          return todo;
+        }
+        return todo;
+      });
     default:
       return state;
   }
@@ -46,6 +54,26 @@ function activeTabReducer(state = initialState.activeTab, action) {
       return state;
   }
 }
+
+const handleEdit = (event, id) => {
+  let text = event.target.innerText;
+  const input = document.createElement("input");
+  input.classList.add("edit_todo");
+  input.value = text;
+  event.target.parentElement.replaceChild(input, event.target);
+  input.focus();
+
+  input.addEventListener("keyup", (event) => {
+    if (event.keyCode == 13) {
+      dispatch(editTodoAction((text = input.value), id));
+    }
+  });
+
+  input.addEventListener("blur", (event) => {
+    dispatch(editTodoAction((text = input.value), id));
+  });
+};
+
 //actions
 
 let addTodoAction = (payload) => ({
@@ -68,6 +96,14 @@ let changeTabAction = (payload) => ({
 });
 let clearCompleted = () => ({
   type: "CLEAR_COMPLETED",
+});
+
+let editTodoAction = (text, id) => ({
+  type: "EDIT_TODO",
+  payload: {
+    text,
+    id,
+  },
 });
 
 let rootReducer = Redux.combineReducers({
@@ -95,13 +131,9 @@ function handleToggle(id) {
 function handleRemove(id) {
   dispatch(removeTodoAction(id));
 }
-//  function handleEdit(id){
-//      dispatch()
-//  }
-
-
-
-
+// function handleEdit({ event, id }) {
+//   dispatch(editTodoAction({ event, id }));
+// }
 
 function createUI(root, data) {
   root.innerHTML = "";
@@ -118,9 +150,8 @@ function createUI(root, data) {
     input.addEventListener("click", () => handleToggle(todo.id));
     span.append(input, label);
     let p = document.createElement("p");
-    
-    p.addEventListener('dblclick',handleEdit);
 
+    p.addEventListener("dblclick", () => handleEdit(event, todo.id));
 
     p.innerText = todo.text;
     let spanDel = document.createElement("span");
